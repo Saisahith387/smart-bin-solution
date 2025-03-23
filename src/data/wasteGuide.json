@@ -1,0 +1,45 @@
+
+[
+  {
+    "category": "Paper",
+    "items": ["Newspapers", "Magazines", "Cardboard boxes", "Office paper", "Envelopes"],
+    "description": "Paper products that are clean and free of food residue.",
+    "disposalMethod": "Place in recycling bin. Flatten cardboard boxes."
+  },
+  {
+    "category": "Plastic",
+    "items": ["Plastic bottles", "Food containers", "Plastic bags", "Packaging materials"],
+    "description": "Most plastics with recycling symbols 1-7 can be recycled.",
+    "disposalMethod": "Rinse and place in recycling bin. Some areas require sorting by type."
+  },
+  {
+    "category": "Glass",
+    "items": ["Bottles", "Jars", "Food containers"],
+    "description": "Glass containers that have been emptied and rinsed.",
+    "disposalMethod": "Remove caps and lids. Rinse and place in recycling bin."
+  },
+  {
+    "category": "Metal",
+    "items": ["Aluminum cans", "Steel cans", "Tin foil", "Metal lids"],
+    "description": "Clean metal items without food residue.",
+    "disposalMethod": "Rinse and place in recycling bin."
+  },
+  {
+    "category": "Organic",
+    "items": ["Food scraps", "Yard waste", "Coffee grounds", "Tea bags"],
+    "description": "Food waste and yard trimmings that can decompose naturally.",
+    "disposalMethod": "Place in compost bin or designated organic waste collection."
+  },
+  {
+    "category": "Hazardous",
+    "items": ["Batteries", "Electronics", "Paint", "Chemicals", "Light bulbs"],
+    "description": "Items containing toxic materials that require special handling.",
+    "disposalMethod": "Take to designated hazardous waste collection centers. Do not place in regular trash."
+  },
+  {
+    "category": "Non-Recyclable",
+    "items": ["Styrofoam", "Some plastics", "Soiled paper", "Broken ceramics"],
+    "description": "Items that cannot be recycled in most municipal programs.",
+    "disposalMethod": "Place in general waste bin. Consider alternatives when possible."
+  }
+]

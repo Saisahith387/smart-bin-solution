@@ -14,6 +14,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Map from "./pages/Map";
+import LocationMap from "./pages/LocationMap";
+import ScheduleManagement from "./pages/ScheduleManagement";
+import CollectionStatus from "./pages/CollectionStatus";
+import IssueReporting from "./pages/IssueReporting";
+import WasteGuide from "./pages/WasteGuide";
+import DataAnalytics from "./pages/DataAnalytics";
 import Analytics from "./pages/Analytics";
 import SortingAssistant from "./pages/SortingAssistant";
 import NotFound from "./pages/NotFound";
@@ -71,6 +77,54 @@ const App = () => {
                     element={
                       <ProtectedRoute>
                         <Map />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/location-map" 
+                    element={
+                      <ProtectedRoute>
+                        <LocationMap />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/schedules" 
+                    element={
+                      <ProtectedRoute>
+                        <ScheduleManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/collection-status" 
+                    element={
+                      <ProtectedRoute requiredRoles={['collector', 'admin']}>
+                        <CollectionStatus />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/issues" 
+                    element={
+                      <ProtectedRoute>
+                        <IssueReporting />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/waste-guide" 
+                    element={
+                      <ProtectedRoute>
+                        <WasteGuide />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/data-analytics" 
+                    element={
+                      <ProtectedRoute requiredRoles={['admin']}>
+                        <DataAnalytics />
                       </ProtectedRoute>
                     } 
                   />
