@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Calendar, ClipboardList, AlertTriangle, CheckSquare, XSquare, Settings } from 'lucide-react';
+import { Calendar, ClipboardList, AlertTriangle, CheckSquare, XSquare, Settings, MapPin } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,6 +99,10 @@ const ActionButton = ({ schedule, onStatusUpdate, variant = "default", size = "d
               <Calendar className="mr-2 h-4 w-4" />
               <span>View Schedules</span>
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/map')}>
+              <MapPin className="mr-2 h-4 w-4" />
+              <span>View Locations</span>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/issues')}>
               <AlertTriangle className="mr-2 h-4 w-4" />
               <span>Report Issue</span>
@@ -121,6 +125,10 @@ const ActionButton = ({ schedule, onStatusUpdate, variant = "default", size = "d
               <ClipboardList className="mr-2 h-4 w-4" />
               <span>View All Collections</span>
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/map')}>
+              <MapPin className="mr-2 h-4 w-4" />
+              <span>View Locations</span>
+            </DropdownMenuItem>
           </DropdownMenuGroup>
         )}
         
@@ -129,6 +137,10 @@ const ActionButton = ({ schedule, onStatusUpdate, variant = "default", size = "d
             <DropdownMenuItem onClick={() => navigate('/schedules')}>
               <Calendar className="mr-2 h-4 w-4" />
               <span>Manage Schedules</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/map')}>
+              <MapPin className="mr-2 h-4 w-4" />
+              <span>Manage Locations</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/issues')}>
               <AlertTriangle className="mr-2 h-4 w-4" />

@@ -2,8 +2,8 @@
 [
   {
     "id": "sch-001",
-    "area": "Downtown",
-    "address": "Main Street & 5th Ave",
+    "area": "Hanumakonda",
+    "address": "Main Street",
     "date": "2024-07-15",
     "time": "08:00",
     "wasteType": "general",
@@ -11,7 +11,7 @@
   },
   {
     "id": "sch-002",
-    "area": "Central Park",
+    "area": "Warangal",
     "address": "Central Park West",
     "date": "2024-07-16",
     "time": "10:00",
@@ -20,8 +20,8 @@
   },
   {
     "id": "sch-003",
-    "area": "Theater District",
-    "address": "Broadway & 42nd St",
+    "area": "Kazipet",
+    "address": "Railway Station Road",
     "date": "2024-07-17",
     "time": "09:00",
     "wasteType": "compost",
@@ -29,8 +29,8 @@
   },
   {
     "id": "sch-004",
-    "area": "Flatiron",
-    "address": "Park Ave & 23rd St",
+    "area": "Naimnagar",
+    "address": "Park Road",
     "date": "2024-07-18",
     "time": "14:00",
     "wasteType": "general",
@@ -38,8 +38,8 @@
   },
   {
     "id": "sch-005",
-    "area": "Greenwich Village",
-    "address": "Washington Square Park",
+    "area": "Subhedari",
+    "address": "Market Center",
     "date": "2024-07-19",
     "time": "08:00",
     "wasteType": "hazardous",
@@ -47,8 +47,8 @@
   },
   {
     "id": "sch-006",
-    "area": "SoHo",
-    "address": "Spring Street & Broadway",
+    "area": "Hanamkonda City Center",
+    "address": "Main Avenue",
     "date": "2024-07-20",
     "time": "10:00",
     "wasteType": "recycling",

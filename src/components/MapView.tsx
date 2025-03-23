@@ -1,7 +1,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Map, MapPin, ArrowUpRight } from 'lucide-react';
+import { Map, MapPin, ArrowUpRight, Edit2, Save, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 
 import StatusIndicator from './StatusIndicator';
 import { BinStatus, WasteType } from './BinStatusCard';
@@ -18,12 +21,16 @@ interface BinLocation {
 interface MapViewProps {
   bins: BinLocation[];
   onBinSelect?: (binId: string) => void;
+  onBinUpdate?: (bin: BinLocation) => void;
 }
 
 // Mock implementation for demo purposes
-const MapView: React.FC<MapViewProps> = ({ bins, onBinSelect }) => {
+const MapView: React.FC<MapViewProps> = ({ bins, onBinSelect, onBinUpdate }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [selectedBin, setSelectedBin] = useState<BinLocation | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedBin, setEditedBin] = useState<BinLocation | null>(null);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
 
   // This would be replaced with actual map implementation
   useEffect(() => {
@@ -38,6 +45,35 @@ const MapView: React.FC<MapViewProps> = ({ bins, onBinSelect }) => {
     if (onBinSelect) {
       onBinSelect(bin.id);
     }
+  };
+
+  const toggleEdit = () => {
+    if (!isEditing && selectedBin) {
+      setEditedBin({...selectedBin});
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!editedBin) return;
+    
+    const { name, value } = e.target;
+    setEditedBin({
+      ...editedBin,
+      [name]: value
+    });
+  };
+
+  const handleSave = () => {
+    if (editedBin && onBinUpdate) {
+      onBinUpdate(editedBin);
+      setSelectedBin(editedBin);
+    }
+    setIsEditing(false);
+  };
+
+  const handleViewDetails = () => {
+    setShowDetailsDialog(true);
   };
 
   const getWasteTypeLabel = (type: WasteType) => {
@@ -121,15 +157,124 @@ const MapView: React.FC<MapViewProps> = ({ bins, onBinSelect }) => {
             <p>Type: {getWasteTypeLabel(selectedBin.wasteType)}</p>
           </div>
           
-          <button 
-            className="flex items-center text-sm mt-3 text-eco-600 hover:text-eco-700 font-medium"
-            onClick={() => onBinSelect && onBinSelect(selectedBin.id)}
-          >
-            <span>View Details</span>
-            <ArrowUpRight className="h-4 w-4 ml-1" />
-          </button>
+          <div className="flex justify-between mt-3">
+            <button 
+              className="flex items-center text-sm text-eco-600 hover:text-eco-700 font-medium"
+              onClick={handleViewDetails}
+            >
+              <span>View Details</span>
+              <ArrowUpRight className="h-4 w-4 ml-1" />
+            </button>
+            
+            <button 
+              className="flex items-center text-sm text-blue-600 hover:text-blue-700 font-medium"
+              onClick={toggleEdit}
+            >
+              <Edit2 className="h-4 w-4 mr-1" />
+              <span>Edit</span>
+            </button>
+          </div>
         </motion.div>
       )}
+
+      {/* Location Details Dialog */}
+      <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Location Details</DialogTitle>
+          </DialogHeader>
+          
+          {selectedBin && !isEditing ? (
+            <div className="space-y-4 py-4">
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Location ID</p>
+                <p className="text-sm text-muted-foreground">{selectedBin.id}</p>
+              </div>
+              
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Address</p>
+                <p className="text-sm text-muted-foreground">{selectedBin.address}</p>
+              </div>
+              
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Waste Type</p>
+                <p className="text-sm text-muted-foreground">{getWasteTypeLabel(selectedBin.wasteType)}</p>
+              </div>
+              
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Status</p>
+                <div className="flex items-center">
+                  <StatusIndicator status={selectedBin.status} showLabel={true} />
+                </div>
+              </div>
+              
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Coordinates</p>
+                <p className="text-sm text-muted-foreground">
+                  Lat: {selectedBin.lat.toFixed(6)}, Lng: {selectedBin.lng.toFixed(6)}
+                </p>
+              </div>
+              
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setShowDetailsDialog(false)}>
+                  Close
+                </Button>
+                <Button onClick={toggleEdit}>
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Edit Details
+                </Button>
+              </div>
+            </div>
+          ) : editedBin ? (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Address</label>
+                <Input
+                  name="address"
+                  value={editedBin.address}
+                  onChange={handleEditChange}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Latitude</label>
+                <Input
+                  name="lat"
+                  type="number"
+                  step="0.000001"
+                  value={editedBin.lat}
+                  onChange={handleEditChange}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Longitude</label>
+                <Input
+                  name="lng"
+                  type="number"
+                  step="0.000001"
+                  value={editedBin.lng}
+                  onChange={handleEditChange}
+                />
+              </div>
+              
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => {
+                  setIsEditing(false);
+                  setEditedBin(null);
+                }}>
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

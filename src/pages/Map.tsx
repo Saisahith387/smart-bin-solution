@@ -1,26 +1,27 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Filter, Search, ArrowUpRight, Layers } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 import PageTransition from '@/components/PageTransition';
 import MapView from '@/components/MapView';
 import StatusIndicator from '@/components/StatusIndicator';
 import { BinStatus, WasteType } from '@/components/BinStatusCard';
 
-// Mock data
+// Mock data with the updated area names
 const MOCK_BIN_LOCATIONS = [
-  { id: '1001', lat: 40.7128, lng: -74.0060, status: 'full' as BinStatus, wasteType: 'general' as WasteType, address: 'Main Street & 5th Ave' },
-  { id: '1002', lat: 40.7138, lng: -74.0050, status: 'half' as BinStatus, wasteType: 'recycling' as WasteType, address: 'Central Park West' },
-  { id: '1003', lat: 40.7118, lng: -74.0070, status: 'empty' as BinStatus, wasteType: 'compost' as WasteType, address: 'Broadway & 42nd St' },
-  { id: '1004', lat: 40.7108, lng: -74.0065, status: 'half' as BinStatus, wasteType: 'general' as WasteType, address: 'Park Ave & 23rd St' },
-  { id: '1005', lat: 40.7132, lng: -74.0045, status: 'full' as BinStatus, wasteType: 'hazardous' as WasteType, address: 'Madison Square Park' },
-  { id: '1006', lat: 40.7145, lng: -74.0080, status: 'empty' as BinStatus, wasteType: 'recycling' as WasteType, address: 'Union Square East' },
-  { id: '1007', lat: 40.7115, lng: -74.0055, status: 'full' as BinStatus, wasteType: 'general' as WasteType, address: 'Times Square' },
-  { id: '1008', lat: 40.7150, lng: -74.0065, status: 'half' as BinStatus, wasteType: 'compost' as WasteType, address: 'Hudson Yards' },
+  { id: '1001', lat: 40.7128, lng: -74.0060, status: 'full' as BinStatus, wasteType: 'general' as WasteType, address: 'Hanumakonda, Main Street' },
+  { id: '1002', lat: 40.7138, lng: -74.0050, status: 'half' as BinStatus, wasteType: 'recycling' as WasteType, address: 'Warangal, Central Park' },
+  { id: '1003', lat: 40.7118, lng: -74.0070, status: 'empty' as BinStatus, wasteType: 'compost' as WasteType, address: 'Kazipet, Railway Station Road' },
+  { id: '1004', lat: 40.7108, lng: -74.0065, status: 'half' as BinStatus, wasteType: 'general' as WasteType, address: 'Naimnagar, Park Road' },
+  { id: '1005', lat: 40.7132, lng: -74.0045, status: 'full' as BinStatus, wasteType: 'hazardous' as WasteType, address: 'Subhedari, Market Center' },
+  { id: '1006', lat: 40.7145, lng: -74.0080, status: 'empty' as BinStatus, wasteType: 'recycling' as WasteType, address: 'Hanumakonda, City Center' },
+  { id: '1007', lat: 40.7115, lng: -74.0055, status: 'full' as BinStatus, wasteType: 'general' as WasteType, address: 'Warangal, Main Road' },
+  { id: '1008', lat: 40.7150, lng: -74.0065, status: 'half' as BinStatus, wasteType: 'compost' as WasteType, address: 'Kazipet, Bus Station' },
 ];
 
 const Map = () => {
+  const [binLocations, setBinLocations] = useState(MOCK_BIN_LOCATIONS);
   const [selectedBin, setSelectedBin] = useState<string | null>(null);
   const [visibleFilters, setVisibleFilters] = useState(false);
   const [filters, setFilters] = useState({
@@ -34,9 +35,10 @@ const Map = () => {
   });
   
   const [searchQuery, setSearchQuery] = useState('');
+  const { toast } = useToast();
   
   // Apply filters
-  const filteredBins = MOCK_BIN_LOCATIONS.filter(bin => {
+  const filteredBins = binLocations.filter(bin => {
     const matchesStatus = 
       (bin.status === 'full' && filters.full) ||
       (bin.status === 'half' && filters.half) ||
@@ -57,6 +59,18 @@ const Map = () => {
 
   const handleBinSelect = (binId: string) => {
     setSelectedBin(binId);
+  };
+
+  const handleBinUpdate = (updatedBin: any) => {
+    const updatedBins = binLocations.map(bin => 
+      bin.id === updatedBin.id ? updatedBin : bin
+    );
+    
+    setBinLocations(updatedBins);
+    toast({
+      title: "Location Updated",
+      description: `Details for bin #${updatedBin.id} have been updated`,
+    });
   };
 
   const toggleFilter = (filter: keyof typeof filters) => {
@@ -136,7 +150,11 @@ const Map = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
             >
-              <MapView bins={filteredBins} onBinSelect={handleBinSelect} />
+              <MapView 
+                bins={filteredBins} 
+                onBinSelect={handleBinSelect} 
+                onBinUpdate={handleBinUpdate}
+              />
             </motion.div>
             
             {/* Sidebar */}
@@ -304,3 +322,4 @@ const getWasteTypeLabel = (type: WasteType) => {
 };
 
 export default Map;
+
