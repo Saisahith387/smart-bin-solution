@@ -4,7 +4,7 @@
     "id": "sch-001",
     "area": "Downtown",
     "address": "Main Street & 5th Ave",
-    "date": "2023-07-01",
+    "date": "2024-07-15",
     "time": "08:00",
     "wasteType": "general",
     "status": "scheduled"
@@ -13,7 +13,7 @@
     "id": "sch-002",
     "area": "Central Park",
     "address": "Central Park West",
-    "date": "2023-07-01",
+    "date": "2024-07-16",
     "time": "10:00",
     "wasteType": "recycling",
     "status": "scheduled"
@@ -22,7 +22,7 @@
     "id": "sch-003",
     "area": "Theater District",
     "address": "Broadway & 42nd St",
-    "date": "2023-07-02",
+    "date": "2024-07-17",
     "time": "09:00",
     "wasteType": "compost",
     "status": "scheduled"
@@ -31,7 +31,7 @@
     "id": "sch-004",
     "area": "Flatiron",
     "address": "Park Ave & 23rd St",
-    "date": "2023-07-02",
+    "date": "2024-07-18",
     "time": "14:00",
     "wasteType": "general",
     "status": "scheduled"
@@ -40,7 +40,7 @@
     "id": "sch-005",
     "area": "Greenwich Village",
     "address": "Washington Square Park",
-    "date": "2023-07-03",
+    "date": "2024-07-19",
     "time": "08:00",
     "wasteType": "hazardous",
     "status": "scheduled"
@@ -49,7 +49,7 @@
     "id": "sch-006",
     "area": "SoHo",
     "address": "Spring Street & Broadway",
-    "date": "2023-07-03",
+    "date": "2024-07-20",
     "time": "10:00",
     "wasteType": "recycling",
     "status": "scheduled"

@@ -3,11 +3,13 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Recycle, BarChart3, Map, Search } from 'lucide-react';
-
+import ActionButton from '@/components/ActionButton';
 import PageTransition from '@/components/PageTransition';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   // Parallax effect on scroll
   useEffect(() => {
@@ -106,20 +108,34 @@ const Index = () => {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4"
               >
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="px-6 py-3 rounded-lg bg-eco-500 text-white font-medium flex items-center space-x-2 hover:bg-eco-600 transition-colors shadow-lg shadow-eco-500/20"
-                >
-                  <span>Get Started</span>
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-                
-                <button
-                  onClick={() => navigate('/sorting-assistant')}
-                  className="px-6 py-3 rounded-lg bg-white text-eco-700 border border-border font-medium hover:bg-muted/50 transition-colors"
-                >
-                  Try Sorting Assistant
-                </button>
+                {isAuthenticated ? (
+                  <>
+                    <ActionButton variant="default" size="lg" />
+                    <button
+                      onClick={() => navigate('/sorting-assistant')}
+                      className="px-6 py-3 rounded-lg bg-white text-eco-700 border border-border font-medium hover:bg-muted/50 transition-colors"
+                    >
+                      Try Sorting Assistant
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => navigate('/login')}
+                      className="px-6 py-3 rounded-lg bg-eco-500 text-white font-medium flex items-center space-x-2 hover:bg-eco-600 transition-colors shadow-lg shadow-eco-500/20"
+                    >
+                      <span>Get Started</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                    
+                    <button
+                      onClick={() => navigate('/sorting-assistant')}
+                      className="px-6 py-3 rounded-lg bg-white text-eco-700 border border-border font-medium hover:bg-muted/50 transition-colors"
+                    >
+                      Try Sorting Assistant
+                    </button>
+                  </>
+                )}
               </motion.div>
             </div>
           </div>

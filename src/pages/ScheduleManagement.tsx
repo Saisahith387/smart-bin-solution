@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getSchedules, addSchedule } from '@/services/dataService';
 import { PickupSchedule, WasteType } from '@/types';
 import { useToast } from '@/hooks/use-toast';
+import ActionButton from '@/components/ActionButton';
 
 const ScheduleManagement = () => {
   const { user } = useAuth();
@@ -325,6 +326,7 @@ interface ScheduleCardProps {
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule, isAdmin, onRefresh }) => {
   const { toast } = useToast();
+  const { isCollector } = useAuth();
   
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -386,8 +388,10 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule, isAdmin, onRefres
         </div>
       </div>
       
-      {isAdmin && (
-        <div className="bg-muted/30 px-5 py-3 flex justify-end">
+      <div className="bg-muted/30 px-5 py-3 flex justify-end">
+        {isCollector && schedule.status === 'scheduled' ? (
+          <ActionButton schedule={schedule} onStatusUpdate={onRefresh} variant="outline" size="sm" />
+        ) : isAdmin && (
           <Button 
             size="sm" 
             variant="ghost" 
@@ -403,8 +407,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule, isAdmin, onRefres
             <Trash2 className="h-4 w-4 mr-2" />
             Delete
           </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
