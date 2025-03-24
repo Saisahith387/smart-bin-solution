@@ -1,18 +1,18 @@
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth, User } from '@/contexts/AuthContext';
+import { useAuth, User, UserRole } from '@/contexts/AuthContext';
 import PageTransition from '@/components/PageTransition';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { motion } from 'framer-motion';
-import { LogIn } from 'lucide-react';
+import { LogIn, Home, Truck, Settings } from 'lucide-react';
 
 const Login = () => {
   const [name, setName] = useState('');
-  const [role, setRole] = useState<'resident' | 'collector' | 'admin'>('resident');
+  const [role, setRole] = useState<UserRole>('resident');
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -40,7 +40,6 @@ const Login = () => {
     setIsLoading(true);
 
     // In a real app, we'd authenticate with a server
-    // For now, we'll simulate a network request
     setTimeout(() => {
       // Create a user object
       const user: User = {
@@ -59,6 +58,18 @@ const Login = () => {
       navigate('/dashboard');
       setIsLoading(false);
     }, 1000);
+  };
+
+  const getRoleIcon = (roleType: UserRole) => {
+    switch (roleType) {
+      case 'admin':
+        return <Settings className="h-5 w-5" />;
+      case 'collector':
+        return <Truck className="h-5 w-5" />;
+      case 'resident':
+      default:
+        return <Home className="h-5 w-5" />;
+    }
   };
 
   return (
@@ -91,36 +102,39 @@ const Login = () => {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="role" className="block text-sm font-medium">
+              <label className="block text-sm font-medium mb-2">
                 Role
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 <Button
                   type="button"
                   variant={role === 'resident' ? 'default' : 'outline'}
                   onClick={() => setRole('resident')}
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex flex-col items-center justify-center p-3 h-auto"
                 >
-                  Resident
+                  <Home className="h-6 w-6 mb-1" />
+                  <span>Resident</span>
                 </Button>
                 <Button
                   type="button"
                   variant={role === 'collector' ? 'default' : 'outline'}
                   onClick={() => setRole('collector')}
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex flex-col items-center justify-center p-3 h-auto"
                 >
-                  Collector
+                  <Truck className="h-6 w-6 mb-1" />
+                  <span>Collector</span>
                 </Button>
                 <Button
                   type="button"
                   variant={role === 'admin' ? 'default' : 'outline'}
                   onClick={() => setRole('admin')}
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex flex-col items-center justify-center p-3 h-auto"
                 >
-                  Admin
+                  <Settings className="h-6 w-6 mb-1" />
+                  <span>Admin</span>
                 </Button>
               </div>
             </div>

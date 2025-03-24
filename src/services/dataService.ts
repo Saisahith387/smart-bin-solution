@@ -68,6 +68,33 @@ export const updateScheduleStatus = (scheduleId: string, status: PickupStatus, c
   }
 };
 
+// Collection Functionality
+export const getCollectionsByCollector = (collectorId: string): PickupSchedule[] => {
+  try {
+    const schedules = getSchedules();
+    return schedules.filter(s => s.collectedBy === collectorId);
+  } catch (error) {
+    console.error('Failed to get collector schedules:', error);
+    return [];
+  }
+};
+
+export const getAssignedSchedules = (collectorId: string): PickupSchedule[] => {
+  try {
+    const schedules = getSchedules();
+    // In a real app, schedules would be assigned to collectors
+    // For demo purposes, we're just returning scheduled pickups
+    return schedules.filter(s => s.status === 'scheduled');
+  } catch (error) {
+    console.error('Failed to get assigned schedules:', error);
+    return [];
+  }
+};
+
+export const completeCollection = (scheduleId: string, collectorId: string, status: 'collected' | 'missed'): PickupSchedule | null => {
+  return updateScheduleStatus(scheduleId, status, collectorId);
+};
+
 // Issues
 export const getIssues = (): Issue[] => {
   try {

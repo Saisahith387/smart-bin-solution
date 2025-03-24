@@ -6,7 +6,9 @@ import {
   User,
   Home,
   Truck,
-  Settings
+  Settings,
+  LogIn,
+  UserPlus
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -65,13 +67,17 @@ const NavbarAuth = () => {
           variant="outline" 
           onClick={() => navigate('/login')}
           size="sm"
+          className="flex items-center"
         >
+          <LogIn className="h-4 w-4 mr-2" />
           Login
         </Button>
         <Button
           onClick={() => navigate('/register')}
           size="sm"
+          className="flex items-center"
         >
+          <UserPlus className="h-4 w-4 mr-2" />
           Register
         </Button>
       </div>
@@ -80,44 +86,56 @@ const NavbarAuth = () => {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar>
-              <AvatarFallback className="bg-eco-500/20 text-eco-700">
-                {user ? getInitials(user.name) : 'U'}
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user?.name}</p>
-              <p className="text-xs leading-none text-muted-foreground flex items-center mt-1">
-                {getRoleIcon()}
-                {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem 
-            className="cursor-pointer"
-            onClick={() => navigate('/dashboard')}
-          >
-            <User className="h-4 w-4 mr-2" />
-            Dashboard
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem 
-            className="cursor-pointer text-red-600 focus:text-red-600"
-            onClick={() => setLogoutDialogOpen(true)}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Log out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-2">
+        <Button 
+          variant="outline" 
+          onClick={() => setLogoutDialogOpen(true)}
+          size="sm"
+          className="flex items-center text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 mr-2"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Logout
+        </Button>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Avatar>
+                <AvatarFallback className="bg-eco-500/20 text-eco-700">
+                  {user ? getInitials(user.name) : 'U'}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{user?.name}</p>
+                <p className="text-xs leading-none text-muted-foreground flex items-center mt-1">
+                  {getRoleIcon()}
+                  {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              className="cursor-pointer"
+              onClick={() => navigate('/dashboard')}
+            >
+              <User className="h-4 w-4 mr-2" />
+              Dashboard
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              className="cursor-pointer text-red-600 focus:text-red-600"
+              onClick={() => setLogoutDialogOpen(true)}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {/* Logout Confirmation Dialog */}
       <Dialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
