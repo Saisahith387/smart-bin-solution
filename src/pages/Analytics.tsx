@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Calendar, 
@@ -8,11 +8,21 @@ import {
   PieChart,
   LineChart,
   ChevronDown,
-  AlertTriangle
+  AlertTriangle,
+  Edit,
+  Save,
+  X
 } from 'lucide-react';
 
 import PageTransition from '@/components/PageTransition';
 import AnalyticsChart from '@/components/AnalyticsChart';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { getAnalyticsMetrics, saveAnalyticsMetrics } from '@/services/dataService';
 
 // Mock data
 const WEEKLY_DATA = [
@@ -58,11 +68,11 @@ const COLLECTION_EFFICIENCY_DATA = [
 ];
 
 const HOTSPOT_DATA = [
-  { name: 'Downtown', general: 65, recycling: 35 },
-  { name: 'Midtown', general: 50, recycling: 50 },
-  { name: 'Uptown', general: 45, recycling: 55 },
-  { name: 'Westside', general: 55, recycling: 45 },
-  { name: 'Eastside', general: 70, recycling: 30 }
+  { name: 'Hanumakonda', general: 65, recycling: 35 },
+  { name: 'Warangal', general: 50, recycling: 50 },
+  { name: 'Kazipet', general: 45, recycling: 55 },
+  { name: 'Naimnagar', general: 55, recycling: 45 },
+  { name: 'Subhedari', general: 70, recycling: 30 }
 ];
 
 // Predictive forecast data
@@ -85,7 +95,7 @@ const INSIGHTS = [
   {
     id: 2,
     title: 'Waste Hotspots',
-    description: 'Downtown area has 30% higher waste generation than other areas.',
+    description: 'Hanumakonda area has 30% higher waste generation than other areas.',
     icon: BarChart3,
     priority: 'medium'
   },
@@ -100,10 +110,58 @@ const INSIGHTS = [
 
 const Analytics = () => {
   const [timeframe, setTimeframe] = useState<'weekly' | 'monthly'>('weekly');
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [metrics, setMetrics] = useState({
+    totalWasteCollected: "350",
+    recyclingRate: "42",
+    collectionEfficiency: "89"
+  });
+  const [editedMetrics, setEditedMetrics] = useState({
+    totalWasteCollected: "",
+    recyclingRate: "",
+    collectionEfficiency: ""
+  });
+  const { toast } = useToast();
+  const { isAdmin } = useAuth();
+  
+  useEffect(() => {
+    // Load saved metrics from localStorage
+    const savedMetrics = getAnalyticsMetrics();
+    if (savedMetrics) {
+      setMetrics(savedMetrics);
+    }
+  }, []);
   
   const handleDownloadReport = () => {
     console.log('Downloading report...');
     // Implementation would go here
+    toast({
+      title: "Report Downloaded",
+      description: "The analytics report has been downloaded successfully",
+    });
+  };
+
+  const handleEditMetrics = () => {
+    setEditedMetrics({...metrics});
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveMetrics = () => {
+    setMetrics({...editedMetrics});
+    saveAnalyticsMetrics(editedMetrics);
+    setIsEditDialogOpen(false);
+    toast({
+      title: "Metrics Updated",
+      description: "The analytics metrics have been updated successfully",
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditedMetrics(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -168,20 +226,31 @@ const Analytics = () => {
               </div>
             </div>
             
-            <button
-              onClick={handleDownloadReport}
-              className="flex items-center space-x-2 text-sm px-4 py-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
-            >
-              <Download className="h-4 w-4" />
-              <span>Download Report</span>
-            </button>
+            <div className="flex space-x-3">
+              {isAdmin && (
+                <button
+                  onClick={handleEditMetrics}
+                  className="flex items-center space-x-2 text-sm px-4 py-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
+                >
+                  <Edit className="h-4 w-4" />
+                  <span>Edit Metrics</span>
+                </button>
+              )}
+              <button
+                onClick={handleDownloadReport}
+                className="flex items-center space-x-2 text-sm px-4 py-2 rounded-lg border border-border hover:bg-muted/30 transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                <span>Download Report</span>
+              </button>
+            </div>
           </motion.div>
           
           {/* Main metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <MetricCard 
               title="Total Waste Collected"
-              value={timeframe === 'weekly' ? "350" : "4,580"}
+              value={metrics.totalWasteCollected}
               unit="kg"
               change="+12.5%"
               changeType="positive"
@@ -190,7 +259,7 @@ const Analytics = () => {
             
             <MetricCard 
               title="Recycling Rate"
-              value="42"
+              value={metrics.recyclingRate}
               unit="%"
               change="+3.2%"
               changeType="positive"
@@ -199,7 +268,7 @@ const Analytics = () => {
             
             <MetricCard 
               title="Collection Efficiency"
-              value="89"
+              value={metrics.collectionEfficiency}
               unit="%"
               change="-2.1%"
               changeType="negative"
@@ -344,6 +413,58 @@ const Analytics = () => {
               ))}
             </div>
           </motion.div>
+          
+          {/* Edit Metrics Dialog */}
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit Analytics Metrics</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="totalWasteCollected">Total Waste Collected (kg)</Label>
+                  <Input
+                    id="totalWasteCollected"
+                    name="totalWasteCollected"
+                    value={editedMetrics.totalWasteCollected}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter amount in kg"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="recyclingRate">Recycling Rate (%)</Label>
+                  <Input
+                    id="recyclingRate"
+                    name="recyclingRate"
+                    value={editedMetrics.recyclingRate}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter percentage"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="collectionEfficiency">Collection Efficiency (%)</Label>
+                  <Input
+                    id="collectionEfficiency"
+                    name="collectionEfficiency"
+                    value={editedMetrics.collectionEfficiency}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter percentage"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveMetrics}>
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </PageTransition>

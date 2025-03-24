@@ -14,7 +14,8 @@ export const getSchedules = (): PickupSchedule[] => {
     // Ensure the waste types are properly typed
     const typedSchedules: PickupSchedule[] = schedulesData.map(schedule => ({
       ...schedule,
-      wasteType: schedule.wasteType as WasteType
+      wasteType: schedule.wasteType as WasteType,
+      status: schedule.status as PickupStatus
     }));
     localStorage.setItem('eco_schedules', JSON.stringify(typedSchedules));
     return typedSchedules;
@@ -164,4 +165,35 @@ export const getCollectionStats = () => {
     areaData,
     issues: { total: totalIssues, resolved: resolvedIssues, pending: pendingIssues }
   };
+};
+
+// Analytics metrics storage
+export const saveAnalyticsMetrics = (metrics: {
+  totalWasteCollected: string;
+  recyclingRate: string;
+  collectionEfficiency: string;
+}) => {
+  localStorage.setItem('eco_analytics_metrics', JSON.stringify(metrics));
+};
+
+export const getAnalyticsMetrics = () => {
+  try {
+    const metrics = localStorage.getItem('eco_analytics_metrics');
+    if (metrics) {
+      return JSON.parse(metrics);
+    }
+    // Default values
+    return {
+      totalWasteCollected: "350",
+      recyclingRate: "42",
+      collectionEfficiency: "89"
+    };
+  } catch (error) {
+    console.error('Failed to get analytics metrics:', error);
+    return {
+      totalWasteCollected: "350",
+      recyclingRate: "42",
+      collectionEfficiency: "89"
+    };
+  }
 };
