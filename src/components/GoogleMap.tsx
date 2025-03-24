@@ -4,6 +4,14 @@ import { Search, MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
+// Add type definitions for Google Maps
+declare global {
+  interface Window {
+    google: any;
+    initMap: () => void;
+  }
+}
+
 interface Location {
   lat: number;
   lng: number;
@@ -26,9 +34,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   height = '500px'
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [map, setMap] = useState<any | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [mapMarkers, setMapMarkers] = useState<google.maps.Marker[]>([]);
+  const [mapMarkers, setMapMarkers] = useState<any[]>([]);
   const [userLocation, setUserLocation] = useState<Location | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
@@ -69,7 +77,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     if (!isScriptLoaded || !mapRef.current) return;
     
     try {
-      const mapInstance = new google.maps.Map(mapRef.current, {
+      const mapInstance = new window.google.maps.Map(mapRef.current, {
         center: initialLocation,
         zoom: 14,
         mapTypeControl: false,
@@ -99,12 +107,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             mapInstance.setCenter(userLoc);
             
             // Add a marker at the user's location
-            new google.maps.Marker({
+            new window.google.maps.Marker({
               position: userLoc,
               map: mapInstance,
               title: 'Your Location',
               icon: {
-                path: google.maps.SymbolPath.CIRCLE,
+                path: window.google.maps.SymbolPath.CIRCLE,
                 fillColor: '#4285F4',
                 fillOpacity: 1,
                 strokeColor: '#ffffff',
@@ -132,11 +140,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     
     // Add new markers
     const newMarkers = markers.map(location => {
-      return new google.maps.Marker({
+      return new window.google.maps.Marker({
         position: { lat: location.lat, lng: location.lng },
         map,
         title: location.address || '',
-        animation: google.maps.Animation.DROP
+        animation: window.google.maps.Animation.DROP
       });
     });
     
@@ -147,8 +155,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const handleSearch = () => {
     if (!map || !searchQuery.trim() || !isScriptLoaded) return;
     
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: searchQuery }, (results, status) => {
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address: searchQuery }, (results: any, status: string) => {
       if (status === 'OK' && results && results[0]) {
         const location = results[0].geometry.location;
         const newLocation = {
@@ -160,11 +168,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         map.setCenter(newLocation);
         
         // Create a marker at the searched location
-        const marker = new google.maps.Marker({
+        const marker = new window.google.maps.Marker({
           position: newLocation,
           map,
           title: newLocation.address,
-          animation: google.maps.Animation.DROP
+          animation: window.google.maps.Animation.DROP
         });
         
         // Call the callback if provided
@@ -173,7 +181,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         }
         
         // Add info window with the address
-        const infoWindow = new google.maps.InfoWindow({
+        const infoWindow = new window.google.maps.InfoWindow({
           content: `<div class="p-2">${newLocation.address}</div>`
         });
         
