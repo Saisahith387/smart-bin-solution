@@ -5,6 +5,7 @@ import { Map, MapPin, ArrowUpRight, Edit2, Save, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import StatusIndicator from './StatusIndicator';
 import { BinStatus, WasteType } from './BinStatusCard';
@@ -61,6 +62,15 @@ const MapView: React.FC<MapViewProps> = ({ bins, onBinSelect, onBinUpdate }) => 
     setEditedBin({
       ...editedBin,
       [name]: value
+    });
+  };
+
+  const handleStatusChange = (value: string) => {
+    if (!editedBin) return;
+    
+    setEditedBin({
+      ...editedBin,
+      status: value as BinStatus
     });
   };
 
@@ -234,6 +244,23 @@ const MapView: React.FC<MapViewProps> = ({ bins, onBinSelect, onBinUpdate }) => 
                   value={editedBin.address}
                   onChange={handleEditChange}
                 />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Status</label>
+                <Select
+                  value={editedBin.status}
+                  onValueChange={handleStatusChange}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select bin status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="empty">Empty</SelectItem>
+                    <SelectItem value="half">Half Full</SelectItem>
+                    <SelectItem value="full">Full</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="space-y-2">

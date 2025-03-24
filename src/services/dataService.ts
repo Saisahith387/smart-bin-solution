@@ -1,6 +1,6 @@
 
 import { v4 as uuidv4 } from 'uuid';
-import { PickupSchedule, Issue, PickupStatus, IssueStatus } from '@/types';
+import { PickupSchedule, Issue, PickupStatus, IssueStatus, WasteType } from '@/types';
 import schedulesData from '@/data/schedules.json';
 
 // Pickup Schedules
@@ -11,8 +11,13 @@ export const getSchedules = (): PickupSchedule[] => {
       return JSON.parse(schedules);
     }
     // Initialize with data from JSON file if not in localStorage
-    localStorage.setItem('eco_schedules', JSON.stringify(schedulesData));
-    return schedulesData;
+    // Ensure the waste types are properly typed
+    const typedSchedules: PickupSchedule[] = schedulesData.map(schedule => ({
+      ...schedule,
+      wasteType: schedule.wasteType as WasteType
+    }));
+    localStorage.setItem('eco_schedules', JSON.stringify(typedSchedules));
+    return typedSchedules;
   } catch (error) {
     console.error('Failed to get schedules:', error);
     return [];
